@@ -10,6 +10,11 @@
     />
     <link rel="manifest" href="/manifest.json" />
     <style>
+      /* Nhúng font UD Digi Kyokasho N-R */
+      @font-face {
+        font-family: 'UD Digi Kyokasho N-R';
+        src: url('font/UDDigiKyokashoN-R.ttc') format('truetype');
+      }
       /* Tùy chỉnh CSS cho giao diện di động */
       body {
         padding: 10px;
@@ -56,6 +61,7 @@
       }
       h2,
       h3,
+      h4,
       h5 {
         font-size: 16px;
       }
@@ -125,7 +131,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="vocabModalLabel">Thông Tin Từ Vựng</h5>
+            <h4 class="modal-title" id="vocabModalLabel">Thông Tin Từ Vựng</h4>
             <button
               type="button"
               class="close"
@@ -314,9 +320,9 @@
       function showVocabInfo(columns) {
         document.getElementById("vocabContent").innerHTML = `
             <span style="color: #FFB3BA; font-size: 36px; font-weight: bold; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[1]}</span><br>
-            <span style="color: #FFDFBA; font-size: 20px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[2]}</span><br>
-            <span style="color: #FFFFBA; font-size: 24px; font-weight: normal; ">${columns[3]}</span><br>
-            <span style="color: #BAFFC9; font-size: 16px; font-weight: bold; ">${columns[4]}</span>
+            <span style="color: #FFDFBA; font-size: 20px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -2px;">${columns[2]}</span><br>
+            <span style="color: #FFFFBA; font-size: 20px; font-weight: normal; ">${columns[3]}</span><br>
+            <span style="color: #BAFFC9; font-size: 20px; font-weight: normal; ">${columns[4]}</span>
         `; // Hiển thị từ, phiên âm, nghĩa và HÁN-VIỆT
 
         // Hiển thị câu ví dụ từ file CSV
