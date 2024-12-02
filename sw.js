@@ -4,11 +4,8 @@ self.addEventListener("install", (event) => {
       return cache.addAll([
         "/",
         "/index.html",
-        "/styles.css", // Thay đổi đường dẫn nếu cần
-        "/script.js", // Thay đổi đường dẫn nếu cần
-        "/icons/icon-192x192.png",
-        "/icons/icon-512x512.png",
-        // Thêm các file khác mà bạn muốn cache
+        "/icon/icon-192x192.png",
+        "/icon/icon-512x512.png",
       ]);
     })
   );
