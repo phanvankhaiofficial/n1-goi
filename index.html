@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Học Tiếng Nhật N1</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <style>
+      /* Tùy chỉnh CSS cho giao diện di động */
+      body {
+        padding: 10px;
+        background-color: #2e2e2e; /* Màu nền tối */
+        color: #ffffff; /* Màu chữ sáng */
+      }
+      .modal-body {
+        padding: 15px;
+        background-color: #3a3a3a; /* Màu nền tối cho modal */
+      }
+      .modal-header {
+        background-color: #3a3a3a; /* Màu nền tối cho modal header */
+        color: #ffffff; /* Màu chữ sáng cho modal header */
+      }
+      .modal-header .close {
+        color: #ffffff; /* Màu chữ sáng cho nút đóng */
+      }
+      .vocab-item {
+        margin-bottom: 10px;
+      }
+      .example-sentence {
+        margin-bottom: 5px;
+      }
+      .form-control {
+        background-color: #3a3a3a; /* Màu nền tối cho dropdown */
+        color: #ffffff; /* Màu chữ sáng cho dropdown */
+      }
+      .form-control:focus {
+        background-color: #3a3a3a; /* Màu nền tối khi focus */
+        color: #ffffff; /* Màu chữ sáng khi focus */
+        border-color: #5c5c5c; /* Màu viền khi focus */
+      }
+      .list-group-item {
+        background-color: #3a3a3a; /* Màu nền tối cho danh sách từ vựng */
+        color: #ffffff; /* Màu chữ sáng cho danh sách từ vựng */
+      }
+      .list-group-item:hover {
+        background-color: #5c5c5c; /* Màu nền khi hover */
+      }
+      h1 {
+        text-align: center; /* Căn giữa tiêu đề */
+        margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+        font-size: 16px;
+      }
+      h2,
+      h3,
+      h5 {
+        font-size: 16px;
+      }
+      h5 {
+        margin-top: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #5c5c5c;
+      }
+      .example-sentence {
+        font-family: "UD Digi Kyokasho N-R", sans-serif;
+        font-size: 20px;
+        letter-spacing: -1px;
+      }
+      .list-group-item {
+        font-family: "UD Digi Kyokasho N-R", sans-serif;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Học Tiếng Nhật N1</h1>
+
+    <div class="container mt-4">
+      <h2>Chọn Nhóm Từ Học</h2>
+      <select id="groupSelect" class="form-control">
+        <option value="1-50">1-50</option>
+        <option value="51-100">51-100</option>
+        <option value="101-145">101-145</option>
+        <option value="146-190">146-190</option>
+        <option value="191-235">191-235</option>
+        <option value="236-280">236-280</option>
+        <option value="281-345">281-345</option>
+        <option value="346-380">346-380</option>
+        <option value="381-428">381-428</option>
+        <option value="429-480">429-480</option>
+        <option value="481-530">481-530</option>
+        <option value="531-600">531-600</option>
+        <option value="601-650">601-650</option>
+        <option value="651-700">651-700</option>
+        <option value="701-750">701-750</option>
+        <option value="751-800">751-800</option>
+        <option value="801-850">801-850</option>
+        <option value="851-890">851-890</option>
+        <option value="891-930">891-930</option>
+        <option value="931-976">931-976</option>
+        <option value="977-1020">977-1020</option>
+        <option value="1021-1067">1021-1067</option>
+        <option value="1068-1110">1068-1110</option>
+        <option value="1111-1170">1111-1170</option>
+      </select>
+
+      <h3 class="mt-4">Danh Sách Từ Vựng</h3>
+      <ul id="vocabList" class="list-group">
+        <!-- Danh sách từ vựng sẽ được thêm vào đây -->
+      </ul>
+    </div>
+
+    <!-- Popup hiển thị thông tin từ vựng -->
+    <div
+      class="modal fade"
+      id="vocabModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="vocabModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="vocabModalLabel">Thông Tin Từ Vựng</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="vocabContent" class="vocab-item"></div>
+            <h5>Câu Ví Dụ</h5>
+            <div id="exampleSentences"></div>
+            <br />
+            <input
+              type="text"
+              id="newExample"
+              class="form-control"
+              placeholder="Nhập câu ví dụ mới"
+            />
+            <button class="btn btn-primary mt-2" id="addExampleBtn">
+              Thêm Câu Ví Dụ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup thêm câu ví dụ -->
+    <div
+      class="modal fade"
+      id="addExampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="addExampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addExampleModalLabel">
+              Thêm Câu Ví Dụ
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="newExample"
+              class="form-control"
+              placeholder="Nhập câu ví dụ mới"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Đóng
+            </button>
+            <button type="button" class="btn btn-primary" id="saveExampleBtn">
+              Lưu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      const colors = [
+        "#FFB3BA",
+        "#FFDFBA",
+        "#FFFFBA",
+        "#BAFFC9",
+        "#BAE1FF",
+        "#FFB3BA",
+        "#FFDFBA",
+        "#FFFFBA",
+        "#BAFFC9",
+        "#BAE1FF",
+        "#FFB3BA",
+        "#FFDFBA",
+        "#FFFFBA",
+        "#BAFFC9",
+        "#BAE1FF",
+        "#FFB3BA",
+        "#FFDFBA",
+        "#FFFFBA",
+        "#BAFFC9",
+        "#BAE1FF",
+      ];
+
+      // Hàm để tải danh sách từ vựng
+      function loadVocabList(selectedGroup) {
+        const filePath = `csv/${selectedGroup}.csv`; // Đường dẫn đến file CSV
+
+        fetch(filePath)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((data) => {
+            const vocabList = document.getElementById("vocabList");
+            vocabList.innerHTML = ""; // Xóa danh sách cũ
+
+            const rows = data.split("\n"); // Tách dữ liệu thành các hàng
+            rows.forEach((row, index) => {
+              const columns = row
+                .split(",")
+                .map((col) => col.replace(/"/g, "").trim()); // Tách hàng thành các cột và loại bỏ dấu ngoặc kép
+              if (columns.length > 1) {
+                const listItem = document.createElement("li");
+                listItem.className = "list-group-item";
+                listItem.textContent = columns[1]; // Giả sử cột thứ 2 là từ vựng
+                listItem.style.color = colors[index % colors.length]; // Áp dụng màu sắc cho chữ từ mảng colors
+
+                listItem.addEventListener("click", () => {
+                  showVocabInfo(columns); // Gọi hàm hiển thị thông tin từ vựng
+                  $("#vocabModal").modal("show"); // Hiển thị modal
+                });
+                vocabList.appendChild(listItem); // Thêm vào danh sách
+              }
+            });
+          })
+          .catch((error) => {
+            console.error("Có lỗi xảy ra:", error);
+          });
+      }
+
+      // Tự động chọn nhóm từ "1-50" và tải danh sách từ vựng
+      document.addEventListener("DOMContentLoaded", () => {
+        const groupSelect = document.getElementById("groupSelect");
+        groupSelect.value = "1-50"; // Chọn nhóm từ "1-50"
+        loadVocabList(groupSelect.value); // Tải danh sách từ vựng tương ứng
+      });
+
+      // Lắng nghe sự kiện thay đổi trên dropdown
+      document
+        .getElementById("groupSelect")
+        .addEventListener("change", function () {
+          loadVocabList(this.value); // Tải danh sách từ vựng khi thay đổi
+        });
+
+      // Lắng nghe sự kiện cho nút "Thêm Câu Ví Dụ"
+      document.getElementById("addExampleBtn").addEventListener("click", () => {
+        const newExampleInput = document.getElementById("newExample");
+        const newExampleText = newExampleInput.value.trim(); // Lấy nội dung từ ô nhập
+        const word = document
+          .getElementById("vocabContent")
+          .querySelector("span").textContent; // Lấy từ vựng hiện tại
+
+        if (newExampleText) {
+          // Lưu câu ví dụ vào Local Storage
+          let examples = JSON.parse(localStorage.getItem(word)) || [];
+          examples.push(newExampleText);
+          localStorage.setItem(word, JSON.stringify(examples));
+
+          // Thêm câu ví dụ vào danh sách trong modal
+          const exampleSentencesDiv =
+            document.getElementById("exampleSentences");
+          const sentenceDiv = document.createElement("div");
+          sentenceDiv.className = "example-sentence";
+          sentenceDiv.style.color =
+            colors[exampleSentencesDiv.children.length % colors.length]; // Gán màu sắc cho câu ví dụ
+          sentenceDiv.textContent = newExampleText; // Thêm câu ví dụ mới
+          exampleSentencesDiv.appendChild(sentenceDiv); // Thêm vào danh sách câu ví dụ
+
+          newExampleInput.value = ""; // Xóa ô nhập sau khi thêm
+        }
+      });
+
+      // Cập nhật hàm hiển thị thông tin từ vựng
+      function showVocabInfo(columns) {
+        document.getElementById("vocabContent").innerHTML = `
+            <span style="color: #FFB3BA; font-size: 36px; font-weight: bold; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[1]}</span><br>
+            <span style="color: #FFDFBA; font-size: 20px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[2]}</span><br>
+            <span style="color: #FFFFBA; font-size: 24px; font-weight: normal; ">${columns[3]}</span><br>
+            <span style="color: #BAFFC9; font-size: 16px; font-weight: bold; ">${columns[4]}</span>
+        `; // Hiển thị từ, phiên âm, nghĩa và HÁN-VIỆT
+
+        // Hiển thị câu ví dụ từ file CSV
+        const exampleSentencesDiv = document.getElementById("exampleSentences");
+        exampleSentencesDiv.innerHTML = ""; // Xóa câu ví dụ cũ
+
+        // Giả sử câu ví dụ từ file CSV bắt đầu từ cột thứ 5
+        for (let i = 5; i < columns.length; i++) {
+          if (columns[i]) {
+            const sentenceDiv = document.createElement("div");
+            sentenceDiv.className = "example-sentence";
+            sentenceDiv.style.color = colors[i % colors.length]; // Gán màu sắc cho câu ví dụ
+            sentenceDiv.textContent = columns[i]; // Thêm câu ví dụ từ file CSV
+            exampleSentencesDiv.appendChild(sentenceDiv);
+          }
+        }
+
+        // Tiêu đề cho câu ví dụ từ Local Storage
+        const localExamplesTitle = document.createElement("h5");
+        localExamplesTitle.textContent = "Câu Ví Dụ Của Bạn";
+        exampleSentencesDiv.appendChild(localExamplesTitle);
+
+        // Hiển thị câu ví dụ từ Local Storage
+        const word = columns[1]; // Lấy từ vựng hiện tại
+        const examples = JSON.parse(localStorage.getItem(word)) || []; // Lấy câu ví dụ từ Local Storage
+        examples.forEach((example, index) => {
+          const sentenceDiv = document.createElement("div");
+          sentenceDiv.className = "example-sentence";
+          sentenceDiv.style.color =
+            colors[(index + columns.length - 5) % colors.length]; // Gán màu sắc cho câu ví dụ
+          sentenceDiv.textContent = example; // Thêm câu ví dụ từ Local Storage
+          exampleSentencesDiv.appendChild(sentenceDiv);
+        });
+      }
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((registration) => {
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope
+              );
+            })
+            .catch((error) => {
+              console.error("Service Worker registration failed:", error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
