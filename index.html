@@ -110,7 +110,7 @@
         margin-bottom: 15px;
         font-style: italic;
       }
-      .local-example {
+      .example-sentence-local {
         font-family: "UD Digi Kyokasho N-R", sans-serif;
         font-size: 18px;
         letter-spacing: -1px;
@@ -353,7 +353,7 @@
           const exampleSentencesDiv =
             document.getElementById("exampleSentences");
           const sentenceDiv = document.createElement("div");
-          sentenceDiv.className = "example-sentence";
+          sentenceDiv.className = "example-sentence-local";
           sentenceDiv.style.color =
             colors[exampleSentencesDiv.children.length % colors.length]; // Gán màu sắc cho câu ví dụ
           sentenceDiv.textContent = newExampleText; // Thêm câu ví dụ mới
@@ -413,7 +413,7 @@
         const examples = JSON.parse(localStorage.getItem(word)) || []; // Lấy câu ví dụ từ Local Storage
         examples.forEach((example, index) => {
           const sentenceDiv = document.createElement("div");
-          sentenceDiv.className = "example-sentence local-example"; // Thêm class name "local-example" cho CSS riêng
+          sentenceDiv.className = "example-sentence-local";
           sentenceDiv.style.color =
             colors[(index + columns.length - 5) % colors.length]; // Gán màu sắc cho câu ví dụ
           sentenceDiv.textContent = example; // Thêm câu ví dụ từ Local Storage
