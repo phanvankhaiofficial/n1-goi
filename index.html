@@ -34,9 +34,18 @@
       .modal-header {
         background-color: #3a3a3a; /* Màu nền tối cho modal header */
         color: #ffffff; /* Màu chữ sáng cho modal header */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
       }
       .modal-header .close {
         color: #ffffff; /* Màu chữ sáng cho nút đóng */
+        display: flex; /* Sử dụng flexbox để căn giữa */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        justify-content: center; /* Căn giữa theo chiều ngang */
+        height: 100%; /* Đảm bảo chiều cao đầy đủ */
+        flex: 1.5;
       }
       .vocab-item {
         margin-bottom: 10px;
@@ -85,6 +94,15 @@
         font-family: "UD Digi Kyokasho N-R", sans-serif;
         font-size: 24px;
       }
+      .fixed-header {
+        position: sticky; /* Đặt vị trí cố định khi cuộn */
+        top: 0px; /* Đặt ở trên cùng */
+        z-index: 1050; /* Đảm bảo nằm trên các phần tử khác */
+      }
+      .btn-secondary {
+        height: calc(2.25rem + 10px); /* Tăng chiều cao thêm 5px */
+        flex: 1;
+      }
     </style>
   </head>
   <body>
@@ -117,9 +135,10 @@
         <option value="1021-1067">1021-1067</option>
         <option value="1068-1110">1068-1110</option>
         <option value="1111-1170">1111-1170</option>
+        <option value="bunpou">bunpou</option>
       </select>
 
-      <h3 class="mt-4">Danh Sách Từ Vựng</h3>
+      <h3 class="mt-4">Danh Sách</h3>
       <ul id="vocabList" class="list-group">
         <!-- Danh sách từ vựng sẽ được thêm vào đây -->
       </ul>
@@ -136,16 +155,18 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="vocabModalLabel">Thông Tin Từ Vựng</h4>
+          <div class="modal-header fixed-header">
+            <button class="btn btn-secondary" id="prevWordBtn">&lt;</button>
             <button
               type="button"
               class="close"
               data-dismiss="modal"
               aria-label="Close"
+              style="margin-right: auto"
             >
               <span aria-hidden="true">&times;</span>
             </button>
+            <button class="btn btn-secondary" id="nextWordBtn">&gt;</button>
           </div>
           <div class="modal-body">
             <div id="vocabContent" class="vocab-item"></div>
@@ -241,6 +262,10 @@
         "#BAE1FF",
       ];
 
+      // Khai báo biến toàn cục để lưu trữ chỉ số từ vựng hiện tại
+      let currentIndex = 0;
+      let vocabListItems = [];
+
       // Hàm để tải danh sách từ vựng
       function loadVocabList(selectedGroup) {
         const filePath = `csv/${selectedGroup}.csv`; // Đường dẫn đến file CSV
@@ -255,6 +280,7 @@
           .then((data) => {
             const vocabList = document.getElementById("vocabList");
             vocabList.innerHTML = ""; // Xóa danh sách cũ
+            vocabListItems = []; // Đặt lại danh sách từ vựng
 
             const rows = data.split("\n"); // Tách dữ liệu thành các hàng
             rows.forEach((row, index) => {
@@ -262,6 +288,7 @@
                 .split(",")
                 .map((col) => col.replace(/"/g, "").trim()); // Tách hàng thành các cột và loại bỏ dấu ngoặc kép
               if (columns.length > 1) {
+                vocabListItems.push(columns); // Lưu trữ thông tin từ vựng
                 const listItem = document.createElement("li");
                 listItem.className = "list-group-item";
                 listItem.textContent = columns[1]; // Giả sử cột thứ 2 là từ vựng
@@ -280,19 +307,25 @@
           });
       }
 
-      // Tự động chọn nhóm từ "1-50" và tải danh sách từ vựng
+      // Tự động chọn nhóm từ từ Local Storage nếu có
       document.addEventListener("DOMContentLoaded", () => {
         const groupSelect = document.getElementById("groupSelect");
-        groupSelect.value = "1-50"; // Chọn nhóm từ "1-50"
-        loadVocabList(groupSelect.value); // Tải danh sách từ vựng tương ứng
-      });
+        const savedGroup = localStorage.getItem("selectedGroup"); // Lấy giá trị từ Local Storage
 
-      // Lắng nghe sự kiện thay đổi trên dropdown
-      document
-        .getElementById("groupSelect")
-        .addEventListener("change", function () {
+        if (savedGroup) {
+          groupSelect.value = savedGroup; // Chọn nhóm từ đã lưu
+        } else {
+          groupSelect.value = "1-50"; // Nếu không có, chọn nhóm từ mặc định
+        }
+
+        loadVocabList(groupSelect.value); // Tải danh sách từ vựng tương ứng
+
+        // Lắng nghe sự kiện thay đổi trên dropdown
+        groupSelect.addEventListener("change", function () {
+          localStorage.setItem("selectedGroup", this.value); // Lưu giá trị vào Local Storage
           loadVocabList(this.value); // Tải danh sách từ vựng khi thay đổi
         });
+      });
 
       // Lắng nghe sự kiện cho nút "Thêm Câu Ví Dụ"
       document.getElementById("addExampleBtn").addEventListener("click", () => {
@@ -394,7 +427,32 @@
           sentenceDiv.appendChild(deleteBtn); // Thêm nút x vào câu ví dụ
           exampleSentencesDiv.appendChild(sentenceDiv); // Thêm vào danh sách câu ví dụ
         });
+
+        // Cập nhật chỉ số hiện tại
+        currentIndex = vocabListItems.findIndex(
+          (item) => item[1] === columns[1]
+        ); // Giả sử cột thứ 2 là từ vựng
       }
+
+      // Hàm để hiển thị từ vựng kế tiếp hoặc trước đó
+      function showNextVocab(increment) {
+        currentIndex += increment; // Tăng hoặc giảm chỉ số
+        if (currentIndex < 0) {
+          currentIndex = 0; // Không cho phép chỉ số âm
+        } else if (currentIndex >= vocabListItems.length) {
+          currentIndex = vocabListItems.length - 1; // Không cho phép chỉ số vượt quá độ dài danh sách
+        }
+        showVocabInfo(vocabListItems[currentIndex]); // Hiển thị thông tin từ vựng mới
+      }
+
+      // Lắng nghe sự kiện cho nút "Trước" và "Sau"
+      document.getElementById("prevWordBtn").addEventListener("click", () => {
+        showNextVocab(-1); // Hiển thị từ vựng trước đó
+      });
+
+      document.getElementById("nextWordBtn").addEventListener("click", () => {
+        showNextVocab(1); // Hiển thị từ vựng kế tiếp
+      });
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {

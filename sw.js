@@ -24,6 +24,7 @@ const urlsToCache = [
   "https://phanvankhaiofficial.github.io/n1-goi/csv/1021-1067.csv",
   "https://phanvankhaiofficial.github.io/n1-goi/csv/1068-1110.csv",
   "https://phanvankhaiofficial.github.io/n1-goi/csv/1111-1170.csv",
+  "https://phanvankhaiofficial.github.io/n1-goi/csv/bunpou.csv",
 ];
 
 self.addEventListener("install", (event) => {
