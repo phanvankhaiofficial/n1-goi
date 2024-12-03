@@ -313,21 +313,6 @@
           sentenceDiv.style.color =
             colors[exampleSentencesDiv.children.length % colors.length]; // Gán màu sắc cho câu ví dụ
           sentenceDiv.textContent = newExampleText; // Thêm câu ví dụ mới
-
-          // Tạo nút xóa cho câu ví dụ mới
-          const deleteBtn = document.createElement("span");
-          deleteBtn.textContent = " x"; // Dấu x
-          deleteBtn.style.color = "red"; // Màu sắc cho dấu x
-          deleteBtn.style.cursor = "pointer"; // Con trỏ chuột khi hover
-          deleteBtn.addEventListener("click", () => {
-            // Xóa câu ví dụ khỏi Local Storage
-            let examples = JSON.parse(localStorage.getItem(word)) || [];
-            examples = examples.filter((example) => example !== newExampleText); // Lọc câu ví dụ
-            localStorage.setItem(word, JSON.stringify(examples)); // Cập nhật Local Storage
-            exampleSentencesDiv.removeChild(sentenceDiv); // Xóa câu ví dụ khỏi danh sách
-          });
-
-          sentenceDiv.appendChild(deleteBtn); // Thêm nút x vào câu ví dụ
           exampleSentencesDiv.appendChild(sentenceDiv); // Thêm vào danh sách câu ví dụ
 
           newExampleInput.value = ""; // Xóa ô nhập sau khi thêm
@@ -372,24 +357,7 @@
           sentenceDiv.style.color =
             colors[(index + columns.length - 5) % colors.length]; // Gán màu sắc cho câu ví dụ
           sentenceDiv.textContent = example; // Thêm câu ví dụ từ Local Storage
-
-          // Tạo nút xóa cho câu ví dụ từ Local Storage
-          const deleteBtn = document.createElement("span");
-          deleteBtn.textContent = " x"; // Dấu x
-          deleteBtn.style.color = "red"; // Màu sắc cho dấu x
-          deleteBtn.style.cursor = "pointer"; // Con trỏ chuột khi hover
-          deleteBtn.addEventListener("click", () => {
-            // Xóa câu ví dụ khỏi Local Storage
-            let examples = JSON.parse(localStorage.getItem(word)) || [];
-            examples = examples.filter(
-              (storedExample) => storedExample !== example
-            ); // Lọc câu ví dụ
-            localStorage.setItem(word, JSON.stringify(examples)); // Cập nhật Local Storage
-            exampleSentencesDiv.removeChild(sentenceDiv); // Xóa câu ví dụ khỏi danh sách
-          });
-
-          sentenceDiv.appendChild(deleteBtn); // Thêm nút x vào câu ví dụ
-          exampleSentencesDiv.appendChild(sentenceDiv); // Thêm vào danh sách câu ví dụ
+          exampleSentencesDiv.appendChild(sentenceDiv);
         });
       }
 
