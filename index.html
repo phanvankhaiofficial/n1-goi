@@ -387,7 +387,7 @@
             const sentenceDiv = document.createElement("div");
             sentenceDiv.className = "example-sentence";
             sentenceDiv.style.color =
-              colors[Math.floor((i - 1) / 2) % colors.length]; // Gán màu sắc cho câu ví dụ, mỗi 2 câu sẽ cùng 1 màu
+              colors[Math.floor((i - 1) / 2 - 2) % colors.length]; // Gán màu sắc cho câu ví dụ, mỗi 2 câu sẽ cùng 1 màu
             sentenceDiv.textContent = columns[i]; // Thêm câu ví dụ từ file CSV
             exampleSentencesDiv.appendChild(sentenceDiv);
           }
