@@ -78,17 +78,12 @@
       h3,
       h4,
       h5 {
-        font-size: 16px;
+        font-size: 12px;
       }
       h5 {
         margin-top: 20px;
         padding-bottom: 10px;
         border-bottom: 1px solid #5c5c5c;
-      }
-      .example-sentence {
-        font-family: "UD Digi Kyokasho N-R", sans-serif;
-        font-size: 20px;
-        letter-spacing: -1px;
       }
       .list-group-item {
         font-family: "UD Digi Kyokasho N-R", sans-serif;
@@ -102,6 +97,18 @@
       .btn-secondary {
         height: calc(2.25rem + 10px); /* Tăng chiều cao thêm 5px */
         flex: 1;
+      }
+      /* CSS cho các câu ví dụ số lẻ */
+      #exampleSentences .example-sentence:nth-child(odd) {
+        font-family: "UD Digi Kyokasho N-R", sans-serif;
+        font-size: 18px;
+        letter-spacing: -1px;
+      }
+      /* CSS cho các câu ví dụ số chẵn */
+      #exampleSentences .example-sentence:nth-child(even) {
+        font-size: 14px;
+        margin-bottom: 15px;
+        font-style: italic;
       }
     </style>
   </head>
@@ -219,18 +226,6 @@
               placeholder="Nhập câu ví dụ mới"
             />
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Đóng
-            </button>
-            <button type="button" class="btn btn-primary" id="saveExampleBtn">
-              Lưu
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -283,16 +278,19 @@
             vocabListItems = []; // Đặt lại danh sách từ vựng
 
             const rows = data.split("\n"); // Tách dữ liệu thành các hàng
-            rows.forEach((row, index) => {
+            rows.forEach((row) => {
+              // Sử dụng biểu thức chính quy để tách các trường dữ liệu
               const columns = row
-                .split(",")
-                .map((col) => col.replace(/"/g, "").trim()); // Tách hàng thành các cột và loại bỏ dấu ngoặc kép
+                .match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g)
+                .map((col) => col.replace(/"/g, "").trim());
+
               if (columns.length > 1) {
                 vocabListItems.push(columns); // Lưu trữ thông tin từ vựng
                 const listItem = document.createElement("li");
                 listItem.className = "list-group-item";
                 listItem.textContent = columns[1]; // Giả sử cột thứ 2 là từ vựng
-                listItem.style.color = colors[index % colors.length]; // Áp dụng màu sắc cho chữ từ mảng colors
+                listItem.style.color =
+                  colors[vocabListItems.length % colors.length]; // Áp dụng màu sắc cho chữ từ mảng colors
 
                 listItem.addEventListener("click", () => {
                   showVocabInfo(columns); // Gọi hàm hiển thị thông tin từ vựng
@@ -374,9 +372,9 @@
       function showVocabInfo(columns) {
         document.getElementById("vocabContent").innerHTML = `
             <span style="color: #FFB3BA; font-size: 36px; font-weight: bold; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[1]}</span><br>
-            <span style="color: #FFDFBA; font-size: 20px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -2px;">${columns[2]}</span><br>
-            <span style="color: #FFFFBA; font-size: 20px; font-weight: normal; ">${columns[3]}</span><br>
-            <span style="color: #BAFFC9; font-size: 20px; font-weight: normal; ">${columns[4]}</span>
+            <span style="color: #FFDFBA; font-size: 18px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -2px;">${columns[2]}</span><br>
+            <span style="color: #FFFFBA; font-size: 18px; font-weight: normal; ">${columns[3]}</span><br>
+            <span style="color: #BAFFC9; font-size: 16px; font-weight: normal; ">${columns[4]}</span>
         `; // Hiển thị từ, phiên âm, nghĩa và HÁN-VIỆT
 
         // Hiển thị câu ví dụ từ file CSV
@@ -388,7 +386,8 @@
           if (columns[i]) {
             const sentenceDiv = document.createElement("div");
             sentenceDiv.className = "example-sentence";
-            sentenceDiv.style.color = colors[i % colors.length]; // Gán màu sắc cho câu ví dụ
+            sentenceDiv.style.color =
+              colors[Math.floor((i - 1) / 2) % colors.length]; // Gán màu sắc cho câu ví dụ, mỗi 2 câu sẽ cùng 1 màu
             sentenceDiv.textContent = columns[i]; // Thêm câu ví dụ từ file CSV
             exampleSentencesDiv.appendChild(sentenceDiv);
           }
