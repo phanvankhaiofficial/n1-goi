@@ -8,9 +8,9 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <link rel="manifest" href="/manifest.json" />
-    <!-- <link rel="icon" href="icon/icon-192x192.png" sizes="192x192" />
-    <link rel="icon" href="icon/icon-512x512.png" sizes="512x512" /> -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon/icon-192x192.png" sizes="192x192" />
+    <link rel="icon" href="icon/icon-512x512.png" sizes="512x512" />
     <link rel="icon" href="icons/favicon.ico" type="image/x-icon" />
     <style>
       /* Nhúng font UD Digi Kyokasho N-R */
@@ -396,7 +396,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/sw.js")
+            .register("sw.js")
             .then((registration) => {
               console.log(
                 "Service Worker registered with scope:",
