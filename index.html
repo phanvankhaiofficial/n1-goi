@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,19 +27,25 @@
         background-color: #2e2e2e; /* Màu nền tối */
         color: #ffffff; /* Màu chữ sáng */
       }
+      .modal-content {
+        height: 85vh;
+      }
       .modal-body {
         padding: 15px;
         background-color: #3a3a3a; /* Màu nền tối cho modal */
+        height: 87%;
+        overflow-y: auto;
       }
-      .modal-header {
+      .modal-footer {
         background-color: #3a3a3a; /* Màu nền tối cho modal header */
         color: #ffffff; /* Màu chữ sáng cho modal header */
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 10px;
+        height: 13%;
       }
-      .modal-header .close {
+      .modal-footer .close {
         color: #ffffff; /* Màu chữ sáng cho nút đóng */
         display: flex; /* Sử dụng flexbox để căn giữa */
         align-items: center; /* Căn giữa theo chiều dọc */
@@ -89,30 +95,31 @@
         font-family: "UD Digi Kyokasho N-R", sans-serif;
         font-size: 24px;
       }
-      .fixed-header {
+      .fixed-footer {
         position: sticky; /* Đặt vị trí cố định khi cuộn */
         top: 0px; /* Đặt ở trên cùng */
         z-index: 1050; /* Đảm bảo nằm trên các phần tử khác */
       }
       .btn-secondary {
-        height: calc(2.25rem + 10px); /* Tăng chiều cao thêm 5px */
+        height: 100%; /* Tăng chiều cao thêm 5px */
         flex: 1;
+        margin: 0;
       }
       /* CSS cho các câu ví dụ số lẻ */
       #exampleSentences .example-sentence:nth-child(odd) {
         font-family: "UD Digi Kyokasho N-R", sans-serif;
-        font-size: 18px;
+        font-size: 16px;
         letter-spacing: -1px;
       }
       /* CSS cho các câu ví dụ số chẵn */
       #exampleSentences .example-sentence:nth-child(even) {
-        font-size: 14px;
-        margin-bottom: 15px;
+        font-size: 12px;
+        margin-bottom: 10px;
         font-style: italic;
       }
       .example-sentence-local {
         font-family: "UD Digi Kyokasho N-R", sans-serif;
-        font-size: 18px;
+        font-size: 16px;
         letter-spacing: -1px;
       }
     </style>
@@ -151,9 +158,13 @@
       </select>
 
       <h3 class="mt-4">Danh Sách</h3>
-      <ul id="vocabList" class="list-group">
-        <!-- Danh sách từ vựng sẽ được thêm vào đây -->
-      </ul>
+
+      <!-- Thêm div bao quanh vocabList -->
+      <div id="vocabListContainer" style="height: 70vh; overflow-y: auto">
+        <ul id="vocabList" class="list-group">
+          <!-- Danh sách từ vựng sẽ được thêm vào đây -->
+        </ul>
+      </div>
     </div>
 
     <!-- Popup hiển thị thông tin từ vựng -->
@@ -167,19 +178,6 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header fixed-header">
-            <button class="btn btn-secondary" id="prevWordBtn">&lt;</button>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-              style="margin-right: auto"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <button class="btn btn-secondary" id="nextWordBtn">&gt;</button>
-          </div>
           <div class="modal-body">
             <div id="vocabContent" class="vocab-item"></div>
             <h5>Câu Ví Dụ</h5>
@@ -195,12 +193,25 @@
               Thêm Câu Ví Dụ
             </button>
           </div>
+          <div class="modal-footer fixed-footer">
+            <button class="btn btn-secondary" id="prevWordBtn">&lt;</button>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              style="margin-right: auto"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <button class="btn btn-secondary" id="nextWordBtn">&gt;</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Popup thêm câu ví dụ -->
-    <div
+    <!-- <div
       class="modal fade"
       id="addExampleModal"
       tabindex="-1"
@@ -210,7 +221,7 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-footer">
             <h5 class="modal-title" id="addExampleModalLabel">
               Thêm Câu Ví Dụ
             </h5>
@@ -233,7 +244,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -381,10 +392,10 @@
       // Cập nhật hàm hiển thị thông tin từ vựng
       function showVocabInfo(columns) {
         document.getElementById("vocabContent").innerHTML = `
-            <span style="color: #FFB3BA; font-size: 36px; font-weight: bold; font-family: 'UD Digi Kyokasho N-R', sans-serif;">${columns[1]}</span><br>
-            <span style="color: #FFDFBA; font-size: 18px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -2px;">${columns[2]}</span><br>
-            <span style="color: #FFFFBA; font-size: 18px; font-weight: normal; ">${columns[3]}</span><br>
-            <span style="color: #BAFFC9; font-size: 16px; font-weight: normal; ">${columns[4]}</span>
+            <span style="color: #FFB3BA; font-size: 24px; font-weight: bold; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -3px;">${columns[1]}</span><br>
+            <span style="color: #FFDFBA; font-size: 14px; font-weight: normal; font-family: 'UD Digi Kyokasho N-R', sans-serif; letter-spacing: -2px;">${columns[2]}</span><br>
+            <span style="color: #FFFFBA; font-size: 14px; font-weight: normal; ">${columns[3]}</span><br>
+            <span style="color: #BAFFC9; font-size: 14px; font-weight: normal; ">${columns[4]}</span>
         `; // Hiển thị từ, phiên âm, nghĩa và HÁN-VIỆT
 
         // Hiển thị câu ví dụ từ file CSV
